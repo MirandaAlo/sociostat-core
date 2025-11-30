@@ -1,0 +1,14 @@
+streamlit
+pandas
+numpy
+plotly
+statsmodels
+scikit-learn
+scipy
+lifelines
+matplotlib
+seaborn
+fpdf
+networkx
+streamlit-option-menu
+openpyxl
