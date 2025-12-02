@@ -11,4 +11,8 @@ seaborn
 fpdf
 networkx
 streamlit-option-menu
+python-docx
 openpyxl
+streamlit-folium
+gTTS
+python-docx
