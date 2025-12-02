@@ -15,4 +15,5 @@ python-docx
 openpyxl
 streamlit-folium
 gTTS
-python-docx
+beautifulsoup4
+requests
