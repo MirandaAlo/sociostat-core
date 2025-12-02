@@ -5827,21 +5827,31 @@ elif selected in ["XAI Explainer", "Explicabilidade", "menu_xai"]:
             
             tab1, tab2 = st.tabs(["🌍 Explicação Global", "👤 Explicação Local (Cliente)"])
             
-            with tab1:
+           with tab1:
                 st.markdown("### O que impulsiona o risco no banco?")
                 st.info("O gráfico abaixo resume o impacto de cada variável no modelo. Variáveis no topo são as mais importantes.")
                 
+                # --- CORREÇÃO: IMPORTAR SHAP E MATPLOTLIB AQUI ---
+                import shap 
+                import matplotlib.pyplot as plt
+                # -------------------------------------------------
+                
                 # Summary Plot (Matplotlib)
+                # Criar figura explicitamente para evitar conflitos de thread
                 fig, ax = plt.subplots()
                 shap.summary_plot(shap_res['shap_values'], shap_res['X'], show=False)
+                
+                # Renderizar no Streamlit
                 st.pyplot(fig)
+                
+                # Limpar a figura da memória para não afetar outros gráficos
+                plt.clf()
                 
                 sofia_explica("""
                 **Interpretação SHAP Global:**
                 
                 * **Cores:** Vermelho significa valor alto da variável (ex: Dívida Alta). Azul é valor baixo.
                 * **Eixo X:** Impacto no Risco. Se os pontos vermelhos estão à direita, significa que valores altos dessa variável AUMENTAM o risco.
-                * **Exemplo:** Se 'Rendimento' tiver pontos azuis à direita, significa que rendimento baixo aumenta o risco.
                 """)
 
             with tab2:
@@ -7156,4 +7166,5 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ===================== FIM DO CÓDIGO =====================
+
 
