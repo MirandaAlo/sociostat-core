@@ -17,3 +17,5 @@ streamlit-folium
 gTTS
 beautifulsoup4
 requests
+shap
+xlswriterr
