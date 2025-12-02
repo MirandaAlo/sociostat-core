@@ -26,7 +26,6 @@ from gtts import gTTS
 from io import BytesIO
 import requests
 from bs4 import BeautifulSoup
-import shap
 import matplotlib.pyplot as plt
 
 # ===================== INICIALIZAÇÃO SESSION STATE =====================
@@ -1555,7 +1554,8 @@ def calcular_elasticidade(df_macro, df_carteira_hist):
 
 # ===================== XAI / SHAP (FUNC 48) =====================
 @st.cache_data(show_spinner="A calcular explicabilidade (SHAP)...")
-def calcular_shap_values(df, _modelo_data): # <--- Note o underscore
+def calcular_shap_values(df, _modelo_data):
+    import shap # <--- MOVA O IMPORT PARA AQUI
     """
     Calcula os valores SHAP para explicar o modelo.
     """
@@ -1588,7 +1588,8 @@ def calcular_shap_values(df, _modelo_data): # <--- Note o underscore
     }
 
 def plot_shap_waterfall(shap_data, cliente_idx=0):
-    """Gera o gráfico de cascata para UM cliente específico"""
+    import shap # <--- MOVA O IMPORT PARA AQUI também
+    import matplotlib.pyplot as plt
     # Preparar dados para um único cliente
     shap_val_single = shap_data['shap_values'][cliente_idx]
     data_single = shap_data['X'].iloc[cliente_idx]
@@ -7155,3 +7156,4 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ===================== FIM DO CÓDIGO =====================
+
