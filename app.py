@@ -5810,6 +5810,7 @@ elif selected == "Gestão de Utilizadores":
         """)
 
 # ===================== PÁGINA: XAI EXPLAINER (FUNC 48) =====================
+# ===================== PÁGINA: XAI EXPLAINER (FUNC 48) =====================
 elif selected in ["XAI Explainer", "Explicabilidade", "menu_xai"]:
     st.header("🧠 Explicabilidade de IA (XAI)")
     log_audit(st.session_state.username, "XAI Access", "Análise de explicabilidade SHAP")
@@ -5823,28 +5824,26 @@ elif selected in ["XAI Explainer", "Explicabilidade", "menu_xai"]:
         
         if modelo_data:
             # Calcular SHAP (Cacheado)
+            # Nota: Usamos _modelo_data para evitar erro de hash
             shap_res = calcular_shap_values(df, _modelo_data=modelo_data)
             
             tab1, tab2 = st.tabs(["🌍 Explicação Global", "👤 Explicação Local (Cliente)"])
             
-           with tab1:
+            # --- ABA 1: GLOBAL ---
+            with tab1:
                 st.markdown("### O que impulsiona o risco no banco?")
                 st.info("O gráfico abaixo resume o impacto de cada variável no modelo. Variáveis no topo são as mais importantes.")
                 
-                # --- CORREÇÃO: IMPORTAR SHAP E MATPLOTLIB AQUI ---
+                # Importar bibliotecas AQUI para evitar erros de arranque
                 import shap 
                 import matplotlib.pyplot as plt
-                # -------------------------------------------------
                 
                 # Summary Plot (Matplotlib)
-                # Criar figura explicitamente para evitar conflitos de thread
                 fig, ax = plt.subplots()
                 shap.summary_plot(shap_res['shap_values'], shap_res['X'], show=False)
-                
-                # Renderizar no Streamlit
                 st.pyplot(fig)
                 
-                # Limpar a figura da memória para não afetar outros gráficos
+                # Limpar a figura
                 plt.clf()
                 
                 sofia_explica("""
@@ -5854,6 +5853,7 @@ elif selected in ["XAI Explainer", "Explicabilidade", "menu_xai"]:
                 * **Eixo X:** Impacto no Risco. Se os pontos vermelhos estão à direita, significa que valores altos dessa variável AUMENTAM o risco.
                 """)
 
+            # --- ABA 2: LOCAL ---
             with tab2:
                 st.markdown("### Por que é que este cliente tem este score?")
                 
@@ -5867,10 +5867,15 @@ elif selected in ["XAI Explainer", "Explicabilidade", "menu_xai"]:
                 col1, col2 = st.columns([2, 1])
                 
                 with col1:
+                    # Importar novamente para garantir o scope
+                    import shap
+                    import matplotlib.pyplot as plt
+                    
                     # Waterfall Plot
                     st.write(f"**Cascata de Decisão para Cliente #{cliente_sel_idx}**")
                     fig_water = plot_shap_waterfall(shap_res, pos_idx)
                     st.pyplot(fig_water)
+                    plt.clf()
                     
                 with col2:
                     # Dados reais do cliente
@@ -5882,10 +5887,9 @@ elif selected in ["XAI Explainer", "Explicabilidade", "menu_xai"]:
                     base_val = shap_res['expected_value']
                     shap_vals = shap_res['shap_values'][pos_idx]
                     
-                    # CORREÇÃO: Somar e converter para número simples (float)
+                    # Correção de Formatação NumPy
                     score_raw = base_val + np.sum(shap_vals)
                     
-                    # Extrair o valor se for um array
                     if isinstance(score_raw, np.ndarray):
                         score_final = float(score_raw.item()) if score_raw.size == 1 else float(score_raw[0])
                     else:
@@ -5898,6 +5902,8 @@ elif selected in ["XAI Explainer", "Explicabilidade", "menu_xai"]:
                     else:
                         st.success("Risco Abaixo da Média")
 
+        else:
+            st.warning("Treine o modelo de Credit Scoring primeiro.")
 # ===================== PÁGINA: WEB SCRAPING (FUNC 39) =====================
 elif selected == "Web Scraping":
     st.header("🕷️ Extração de Dados Web (Scraping)")
@@ -7166,5 +7172,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ===================== FIM DO CÓDIGO =====================
+
 
 
